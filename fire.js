@@ -71,7 +71,7 @@ function showEditPlan(plan) {
     $(html_tr).find(".edit-plan-form-term").val(term);
     $(html_tr).find(".edit-plan-form-rate").val(rate);
     $(html_tr).find(".edit-plan-form-amount").val(amount);
-    $(html_tr_head).after($(html_tr));
+    $(html_tr_head).before($(html_tr));
   }
   $(html_tr_head).remove();
 }
@@ -101,6 +101,18 @@ function registerPlan() {
   plans[id].year  = $("#edit-plan-start-year").val();
   plans[id].month  = $("#edit-plan-start-month").val();
   let html_trs = $("#edit-plan-details").children("tr");
+
+  plans[id].details = [];
+  for (let i = 0; i < $(html_trs).length; i++) {
+    let term = $(html_trs[i]).find(".edit-plan-form-term").val();
+    let rate = $(html_trs[i]).find(".edit-plan-form-rate").val();
+    let amount = $(html_trs[i]).find(".edit-plan-form-amount").val();
+    let detail = {"term": term, "rate": rate, "amount": amount};
+    plans[id].details[i] = detail;
+  }
+  localStorage.setItem("fire-plans", JSON.stringify(plans));
+  alert("登録しました。");
+  return;
 
   for (let i = 0; i < plans[id].details.length; i++) {
     let term = $(html_trs[i]).find(".edit-plan-form-term").val();
