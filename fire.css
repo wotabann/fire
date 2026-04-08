@@ -1,0 +1,795 @@
+@charset "UTF-8";
+
+/******************************************************************************/
+/* all                                                                        */
+/******************************************************************************/
+* {
+    box-sizing: border-box;
+}
+
+
+
+/******************************************************************************/
+/* default                                                                    */
+/******************************************************************************/
+.positive-font {
+  color: green;
+}
+.negative-font {
+  color: red;
+}
+.line-through {
+  text-decoration: line-through;
+}
+.notice-background {
+  background-color: #FFEE00;
+}
+button {
+  position: relative;
+  display: block;
+  width: 180px;
+  padding: 5px 0;
+  margin: 12px auto 0 auto;
+  font-size: 1.0rem;
+  text-align: center;
+  text-decoration: none;
+  background-color: #fff;
+  color: #333;
+  border: 1px solid transparent;
+  border-color: #333;
+  border-radius: 30px;
+  cursor: pointer;
+}
+button:disabled {
+  background: none;
+  background-color: #bbb;
+  color: #fff;
+  cursor: default;
+}
+
+
+
+/******************************************************************************/
+/* html                                                                       */
+/******************************************************************************/
+html {
+    margin: 0;
+    height: auto;
+}
+
+
+
+/******************************************************************************/
+/* body                                                                       */
+/******************************************************************************/
+body {
+    font-family: 'メイリオ', 'Hiragino Kaku Gothic Pro', sans-serif;
+    font-size: 14px;
+    color: #333;
+    margin: 0;
+    height: auto;
+    background-color: #fff;
+}
+body:has(dialog[open]) {
+  overflow: hidden;
+}
+
+
+
+/******************************************************************************/
+/* background                                                                 */
+/******************************************************************************/
+#background {
+  overflow: hidden;
+  position: relative;
+  width: 700px;
+  margin: 0 auto;
+  padding: 10px 0;
+  border-left: #ccc solid 1px;
+  border-right: #ccc solid 1px;
+  box-shadow: 0 0px 20px rgb(0, 0, 0, .16);
+  /* -webkit-box-shadow: 0 0px 20px rgb(0, 0, 0, .16); */
+  /* box-shadow: 0 0px 20px rgb(0, 0, 0, .16); */
+  background-image: 
+    repeating-linear-gradient(45deg,
+                            rgba(194, 168, 204, 0.50),
+                            rgba(194, 168, 204, 0.50) 20px,
+                            transparent 0,
+                            transparent 40px),
+    repeating-linear-gradient(315deg,
+                            rgba(219, 66, 119, 0.30),
+                            rgba(219, 66, 119, 0.30) 20px,
+                              transparent 0,
+                              transparent 40px);
+}
+@media only screen and (max-width:699px) {
+  #background {
+      width: 100%;
+      box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -moz-background-size: contain;
+      background-size: contain;
+  }
+}
+
+
+
+/******************************************************************************/
+/* common                                                                     */
+/******************************************************************************/
+.request-button {
+  padding: 8px 0;
+  margin: 10px auto 0 auto;
+  font-size: 1.0rem;
+  letter-spacing: 0.1rem;
+  text-decoration: none;
+  color: #fff;
+  border: none;
+}
+
+
+
+/******************************************************************************/
+/* dialog                                                                     */
+/******************************************************************************/
+.dialog::backdrop {
+  backdrop-filter: blur(8px);
+}
+.dialog {
+  position: fixed;
+  inset-inline: 0;
+  inset-block: 0;
+  min-width: 360px;
+  max-width: 680px;
+  max-height: 95%;
+  margin: auto;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0px 10px 18px 0px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+@media only screen and (max-width:699px) {
+  .dialog {
+      width: 94%;
+  }
+}
+
+
+
+/******************************************************************************/
+/* section                                                                    */
+/******************************************************************************/
+.section {
+  background-color: #fff;
+  border-radius: 30px;
+  width: 98%;
+  margin: 0 auto 15px auto;
+  padding: 10px 15px 20px 15px;
+  box-shadow: 0 0px 16px rgba(0, 73, 134, .50);
+}
+
+.section-head {
+  position: relative;
+  padding-bottom: 10px;
+  text-align: center;
+}
+
+.section-head h1 {
+  font-family: "Hachi Maru Pop", serif;
+  font-size: 1.6rem;
+  font-weight: bold;
+  letter-spacing: 0.25rem;
+  margin: 0;
+  padding: 0;
+}
+
+.section-head h2 {
+  font-family: "Hachi Maru Pop", serif;
+  font-size: 1.0rem;
+  letter-spacing: 0.2rem;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+.section-head .shape {
+  position: absolute;
+  box-shadow: 0 0px 4px rgb(0, 0, 0, .16);
+}
+.section-head .pink {
+  background-color: #db4277;
+}
+.section-head .yellow {
+  background-color: #FFEE00;
+}
+.section-head .blue {
+  background-color: #004986;
+}
+.section-head .orange {
+  background-color: #f39800;
+}
+.section-head .green {
+  background-color: #69bd83;
+}
+.section-head .violet {
+  background-color: #DD59CF;
+}
+.section-head .medium {
+  width: 11px;
+  height: 11px;
+}
+.section-head .large {
+  width: 18px;
+  height: 18px;
+}
+.section-head .circle {
+  border-radius: 20px;
+}
+.section-head .square {
+  border-radius: 4px;
+}
+
+.section-body {
+  margin: 0 auto;
+  text-align: center;
+}
+
+.section-body h3 {
+  font-size: 0.9rem;
+  font-weight: normal;
+  letter-spacing: 0.1rem;
+  text-align: left;
+  margin: 5px 0 10px 0;
+  padding: 3px 0 3px 8px;
+  border-left: solid 5px #333;
+  border-bottom: solid 1px #333;
+}
+
+.section-body .form {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  margin: 0 auto;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  text-align: left;
+}
+.section-body .form label {
+  display: inline-block;
+  width: 100px;
+  margin-right: 10px;
+  text-align: right;
+  font-size: 0.80rem;
+}
+.section-body .form input {
+  padding: 4px;
+  text-align: left;
+}
+
+
+
+/******************************************************************************/
+/* edit-plan                                                                  */
+/******************************************************************************/
+#edit-plan h1 {
+  color: rgba(0, 164, 105, 1.0);
+}
+#edit-plan h2 {
+  color: #333;
+}
+.edit-plan-request-button {
+  width: 40%;
+  background-color: rgba(0, 164, 105, 1.0);
+}
+.edit-plan-request-simulate-button {
+  width: 40%;
+  background: linear-gradient(135deg, rgba(0, 164, 105, 1.0) 0%, rgba(0, 164, 105, 1.0) 50%, rgba(0, 73, 134, 1.0) 50%, rgba(0, 73, 134, 1.0) 100%);
+}
+#edit-plan-id {
+  width: 80px;
+}
+#edit-plan-name {
+  width: 70%;
+}
+#edit-plan-start-value {
+  width: 80px;
+  margin-right: 5px;
+}
+#edit-plan-start-year {
+  width: 80px;
+  margin-right: 5px;
+}
+#edit-plan-start-month {
+  width: 80px;
+  margin-right: 5px;
+}
+.edit-plan-form-term {
+  margin-right: 5px;
+  width: 50px;
+  text-align: right;
+}
+.edit-plan-form-rate {
+  margin-right: 5px;
+  width: 60px;
+  text-align: right;
+}
+.edit-plan-form-amount {
+  margin-right: 5px;
+  width: 50px;
+  text-align: right;
+}
+.edit-plan-form-insert,
+.edit-plan-form-remove {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  padding: 0;
+  border-radius: 20px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+
+
+
+/******************************************************************************/
+/* dump                                                                       */
+/******************************************************************************/
+#dump h1 {
+  color: rgba(0, 73, 134, 1.0);
+}
+#dump h2 {
+  color: #333;
+}
+.dump-section {
+  width: 98%;
+  margin: 0 auto;
+  text-align: center;
+}
+.dump-section-head {
+  font-size: 14px;
+  font-weight: normal;
+  text-align: left;
+  letter-spacing: 0.1rem;
+  color: #333;
+  padding: 2px 7px;
+  margin-top: 10px;
+  border-left: 3px solid rgba(0, 73, 134, 1.0);
+  border-bottom: 1px solid rgba(0, 73, 134, 1.0);
+}
+.dump-section-body {
+  padding: 5px 0;
+}
+.dump-request-button {
+  width: 150px;
+  background-color: rgba(0, 73, 134, 1.0);
+}
+
+
+
+/******************************************************************************/
+/* table                                                                 */
+/******************************************************************************/
+.table-wrapper {
+  overflow-x: auto;
+  margin: 0 auto;
+  width: 98%;
+}
+table {
+  font-size: 0.8rem;
+  text-align: right;
+  white-space: nowrap;
+  border-collapse: separate;
+  border-spacing: 5px 4px;
+  margin: 0 auto;
+}
+table tr {
+  vertical-align: middle;
+}
+table th {
+  position: sticky;
+  top: 0;
+  left: 0;
+  padding: 2px 6px;
+  border-bottom: 1px solid #ccc;
+  text-align: center;
+}
+table th::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  border-bottom: 1px solid #ccc;
+  z-index: -1;
+}
+table th:first-child {
+  z-index: 3;
+  background-color: #fff;
+}
+table td {
+  padding: 2px 10px;
+  text-align: right;
+}
+table td:first-child {
+  position: sticky;
+  top: 0;
+  left: 0;
+  background-color: #fff;
+}
+table td:first-child::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  z-index: -1;
+}
+
+
+
+
+/******************************************************************************/
+/* dump-two-columns                                                           */
+/******************************************************************************/
+.dump-two-columns {
+  display: flex;
+  justify-content: center;
+  padding: 7px 0 0 0;
+  text-align: left;
+}
+.dump-two-columns-left {
+  margin: 0;
+  padding-right: 20px;
+  border-right: 1px solid #ccc;
+  text-align: right;
+}
+.dump-two-columns-right {
+  margin: 0;
+  padding-left: 20px;
+  text-align: left;
+}
+
+
+
+/******************************************************************************/
+/* description-table                                                          */
+/******************************************************************************/
+.description-table {
+  font-size: 0.9rem;
+  text-align: right;
+  white-space: nowrap;
+  border-collapse: collapse;
+  border-spacing: 0;
+  margin: 0 auto;
+}
+.description-table tr {
+  vertical-align: middle;
+  margin: 0;
+  padding: 0;
+}
+.description-table tr td:first-child {
+  margin: 0;
+  padding: 4px 12px 4px 0;
+  text-align: right;
+}
+.description-table tr td:last-child {
+  margin: 0;
+  padding: 4px 0 4px 12px;
+  text-align: left;
+}
+
+
+
+/******************************************************************************/
+/* dump-one-line-description                                                  */
+/******************************************************************************/
+.dump-one-line-description {
+  width: auto;
+}
+.dump-one-line-description dl {
+  display: flex;
+  justify-content: center;
+  vertical-align: middle;
+  margin: 0;
+  padding: 4px 0;
+  width: 96%;
+}
+.dump-one-line-description dt {
+  display: block;
+  margin: 0;
+  min-width: 90px;
+  max-width: 110px;
+  padding-right: 10px;
+  text-align: right;
+}
+.dump-one-line-description dd {
+  display: block;
+  margin: 0;
+  min-width: 80px;
+  max-width: 100px;
+  padding-left: 10px;
+  text-align: left;
+}
+
+
+
+/******************************************************************************/
+/* dialog                                                                     */
+/******************************************************************************/
+.dialog-section {
+  margin: 0 auto;
+  padding: 3px 0;
+}
+.dialog-head {
+  font-size: 14px;
+  font-weight: normal;
+  text-align: left;
+  letter-spacing: 0.1rem;
+  color: #333;
+  padding: 2px 7px;
+  border-left: 3px solid rgba(0, 73, 134, 1.0);
+  border-bottom: 1px solid rgba(0, 73, 134, 1.0);
+}
+.dialog-body {
+  padding: 3px 0;
+}
+.dialog-game-record-table-wrapper {
+  overflow-y: scroll;
+  margin: 0;
+  padding: 0;
+  width: auto;
+  max-height: 300px;
+}
+
+.dialog-body  .input {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  margin: 0 auto;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  text-align: left;
+}
+.dialog-body  .input label {
+  display: inline-block;
+  width: 80px;
+  margin-right: 10px;
+  text-align: right;
+  font-size: 0.80rem;
+}
+.dialog-body  .input input {
+  padding: 3px;
+  text-align: left;
+}
+.dialog-body  .checkbox {
+  text-align: left;
+}
+.dialog-body  .checkbox label {
+  display: inline-block;
+  font-size: 0.80rem;
+  width: auto;
+  padding-top: 3px;
+  margin-left: 15px;
+  cursor: pointer;
+}
+.dialog-body  .checkbox input {
+  display: inline-block;
+  font-size: 0.80rem;
+  cursor: pointer;
+}
+
+
+/******************************************************************************/
+/* dump-total-record                                                          */
+/******************************************************************************/
+#dump-total-record {
+  display: none;
+}
+
+#dump-total-record .dump-rank {
+  padding: 6px 3px 1px 3px;
+  font-size: 0.9em;
+}
+
+
+
+/******************************************************************************/
+/* dump-history-chart                                                         */
+/******************************************************************************/
+#dump-history-chart {
+  display: none;
+}
+.dump-history-chart > div {
+  width: calc(100% - 18px);
+  margin: 0 auto;
+}
+.dump-history-chart canvas {
+  height: 320px;
+}
+.dump-history-chart span {
+  font-size: 0.9rem;
+  padding: 2px;
+}
+.dump-history-chart .slick-next {
+  right: 0 !important;
+}
+.dump-history-chart .slick-prev {
+  left: 0 !important;
+}
+.dump-history-chart .slick-arrow {
+  z-index: 2 !important;
+}
+.dump-history-chart .slick-arrow:before {
+  color: rgba(0, 0, 0, 0.6);
+}
+.dump-history-chart .slick-slide {
+  height: auto !important;
+  max-height: 340px !important;
+}
+.dump-history-chart .canvas-latest {
+  display: none;
+}
+.dump-history-chart .canvas-all {
+  display: none;
+}
+.dump-history-chart .canvas-daily {
+  display: none;
+}
+
+
+/******************************************************************************/
+/* dump-game-record                                                           */
+/******************************************************************************/
+#dump-game-record {
+  display: none;
+}
+.dump-game-record-notice {
+  display: none;
+  padding: 3px 0;
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: red;
+}
+.dump-game-record-table-wrapper {
+  max-height: 550px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  text-align: center;
+}
+
+
+
+/******************************************************************************/
+/* dump-daily-record                                                          */
+/******************************************************************************/
+#dump-daily-record {
+  display: none;
+}
+.dump-daily-record-table-wrapper {
+  max-height: 275px;
+  overflow-y: scroll;
+}
+.dump-daily-record-table th {
+  text-align: right;
+}
+.dump-daily-record-table tr .date {
+  min-width: 70px;
+}
+.dump-daily-record-table tr .rate {
+  min-width: 80px;
+}
+.dump-daily-record-table tr .game-count {
+  min-width: 50px;
+}
+.dump-daily-record-table tr .win-over {
+  min-width: 50px;
+}
+.dump-daily-record-table tr .win-count,
+.dump-daily-record-table tr .lose-count,
+.dump-daily-record-table tr .min-rate,
+.dump-daily-record-table tr .max-rate,
+.dump-daily-record-table tr .total-stock,
+.dump-daily-record-table tr .total-rate {
+  display: none;
+}
+
+
+
+/******************************************************************************/
+/* dump-fighter-record                                                        */
+/******************************************************************************/
+#dump-fighter-record {
+  display: none;
+}
+.dump-fighter-record-table-wrapper {
+  overflow-x: auto;
+}
+.dump-fighter-record-table th {
+  text-align: center;
+}
+.dump-fighter-record-table thead tr .fighter {
+  text-align: center;
+}
+.dump-fighter-record-table tbody tr .fighter {
+  padding-right: 8px;
+  text-align: right;
+}
+.dump-fighter-record-table tr .fighter-id,
+.dump-fighter-record-table tr .win-count,
+.dump-fighter-record-table tr .lose-count,
+.dump-fighter-record-table tr .total-stock {
+  display: none;
+}
+
+
+/******************************************************************************/
+/* dialog-form                                                                */
+/******************************************************************************/
+.dialog-form {
+  width: 90%;
+  margin: 0 auto;
+}
+.dialog-form-id {
+  width: 30px;
+}
+.dialog-form-id input {
+  width: 50px;
+}
+.dialog-form-date input {
+  width: 120px;
+}
+.dialog-form-rate input {
+  width: 100px;
+}
+.dialog-form-stock input {
+  width: 100px;
+}
+.dialog-form-fighter input {
+  width: 180px;
+}
+.dialog-form-is-vip {
+  display: none;
+}
+.dialog-form-is-vip input {
+  display: block;
+  width: 25px;
+  cursor: pointer;
+}
+.dialog-form-is-disabled input {
+  display: block;
+  width: 25px;
+  cursor: pointer;
+}
+
+.dialog-dump-request-button {
+  width: 40%;
+  font-size: 0.90rem;
+  background: linear-gradient(135deg, rgba(0, 164, 105, 1.0) 0%, rgba(0, 164, 105, 1.0) 50%, rgba(0, 73, 134, 1.0) 50%, rgba(0, 73, 134, 1.0) 100%);
+}
+
+.dialog-request-result {
+  display: flex !important;
+  align-items: flex-start;
+  width: 100%;
+  margin: 10px auto 0 auto;
+  font-size: 0.8rem;
+}
+.dialog-request-result-caption {
+  width: 80px;
+  margin-right: 10px;
+  text-align: right;
+  font-size: 0.8rem;
+}
+.dialog-request-result-content {
+  text-align: left;
+  font-size: 0.8rem;
+}
