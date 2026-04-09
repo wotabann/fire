@@ -22,7 +22,7 @@ function initialize() {
 //---------------------------------------------------
 function initializePlans() {
   if (getRegisteredPlans() !== null) {
-    //return;
+    return;
   }
   const details0 = [{term: 10, rate: "3.0", amount: 5}];
   const details1 = [{term: 10, rate: "4.0", amount: 5}];
