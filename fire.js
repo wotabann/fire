@@ -12,7 +12,8 @@ function initialize() {
   $("#edit-plan-details").find(".edit-plan-form-remove").on("click", function(){removeEditDetail($(this))});
   $("#dialog-close-button").on("click", () => { $("#dialog").hide() });
 
-  refreshEditSelectSection();
+  let plans = getRegisteredPlans();
+  refreshEditSelectSection(plans);
 }
 
 
@@ -23,13 +24,13 @@ function initializePlans() {
   if (getRegisteredPlans() !== null) {
     //return;
   }
-  const details1 = [{term: 10, rate: "3.0", amount: 5}];
-  const details2 = [{term: 10, rate: "4.0", amount: 5}];
-  const details3 = [{term: 10, rate: "5.0", amount: 5}];
+  const details0 = [{term: 10, rate: "3.0", amount: 5}];
+  const details1 = [{term: 10, rate: "4.0", amount: 5}];
+  const details2 = [{term: 10, rate: "5.0", amount: 5}];
   const plans = [
-    { id: 0, name: "100万/3%/5万", value: 100,  year: 2026, month: 4, details: details1},
-    { id: 1, name: "100万/4%/5万", value: 100,  year: 2026, month: 4, details: details2},
-    { id: 2, name: "100万/5%/5万", value: 100,  year: 2026, month: 4, details: details3},
+    { id: 0, name: "planA", description: "初期100万 / 月利3% / 積立5万", value: 100,  year: 2026, month: 4, details: details0},
+    { id: 1, name: "planB", description: "初期100万 / 月利4% / 積立5万", value: 100,  year: 2026, month: 4, details: details1},
+    { id: 2, name: "planC", description: "初期100万 / 月利5% / 積立5万", value: 100,  year: 2026, month: 4, details: details2},
   ];
   localStorage.setItem("fire-plans", JSON.stringify(plans));
 }
@@ -64,11 +65,10 @@ function selectEditPlan() {
   refreshEditPlanDialog(plans[id]);
   showEditPlanDialog();
 }
-function refreshEditSelectSection() {
-  let plans = getRegisteredPlans();
+function refreshEditSelectSection(plans) {
   let html = "";
   for (let i = 0; i < plans.length; i++) {
-    html += "<option value=" + i + ">" + plans[i].name + "</option>";
+    html += "<option value=" + i + ">" + plans[i].name + ": " + plans[i].description + "</option>";
   }
   $("#edit-select").html(html);
 }
@@ -87,6 +87,7 @@ function hideEditPlanDialog() {
 function refreshEditPlanDialog(plan) {
   $("#edit-plan-id").val(plan.id);
   $("#edit-plan-name").val(plan.name);
+  $("#edit-plan-description").val(plan.description);
   $("#edit-plan-start-value").val(plan.value);
   $("#edit-plan-start-year").val(plan.year);
   $("#edit-plan-start-month").val(plan.month);
@@ -125,6 +126,7 @@ function registerPlan() {
   let id    = $("#edit-plan-id").val();
   let plans = getRegisteredPlans();
   plans[id].name  = $("#edit-plan-name").val();
+  plans[id].description  = $("#edit-plan-description").val();
   plans[id].value = $("#edit-plan-start-value").val();
   plans[id].year  = $("#edit-plan-start-year").val();
   plans[id].month  = $("#edit-plan-start-month").val();
@@ -141,6 +143,10 @@ function registerPlan() {
   localStorage.setItem("fire-plans", JSON.stringify(plans));
   alert("登録しました。");
   hideEditPlanDialog();
+  plans = getRegisteredPlans();
+  refreshEditSelectSection(plans);
+  refreshProgressTable(plans);
+  refreshSimulateTable(plans);
 }
 
 //---------------------------------------------------
@@ -172,6 +178,7 @@ function refreshProgressTable(plans) {
     html_tbody_tr += "<td>" + assetsToString(plannedAssets) + "</td>";
     html_tbody_tr += "<td>" + valueDiff + "</td>";
     html_tbody_tr += "<td>" + rateDiff + "</td>";
+    html_tbody_tr += "<td>" + plans[p].description + "</td>";
     html_tbody_tr += "</tr>";
   }
   $("#progress-tbody").html(html_tbody_tr);

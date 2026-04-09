@@ -318,6 +318,9 @@ body:has(dialog[open]) {
   width: 80px;
 }
 #edit-plan-name {
+  width: 50%;
+}
+#edit-plan-description {
   width: 70%;
 }
 #edit-plan-start-value {

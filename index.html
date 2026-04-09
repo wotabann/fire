@@ -35,9 +35,6 @@
                 <div class="section-body">
                     <div class="table-wrapper">
                         <select id="edit-select">
-                            <option>planA</option>
-                            <option>planA</option>
-                            <option>planA</option>
                         </select>
                         <button type="button" id="edit-select-button">編集</button>
                     </div>
@@ -72,6 +69,7 @@
                                     <th>目標額</td>
                                     <th>差</td>
                                     <th>比</td>
+                                    <th>説明</td>
                                 </tr>
                             </thead>
                             <tbody id="progress-tbody">
@@ -118,7 +116,11 @@
                             <input type="number" id="edit-plan-id" disabled hidden>
                             <div class="form edit-plan-name">
                                 <label for="edit-plan-plan-name">プラン名</label>
-                                <input type="text" id="edit-plan-name" placeholder="(例) 月4%+積立3万">
+                                <input type="text" id="edit-plan-name" placeholder="(例) planA">
+                            </div>
+                            <div class="form edit-plan-description">
+                                <label for="edit-plan-plan-description">プラン説明</label>
+                                <input type="text" id="edit-plan-description" placeholder="(例) 初期100万 / 月利4% / 積立3万">
                             </div>
                             <div class="form edit-plan-start-value">
                                 <label for="edit-plan-start-value">開始額</label>
@@ -146,8 +148,8 @@
                                             <td><input type="number" class="edit-plan-form-term" min="1" max="30">年</td>
                                             <td><input type="number" class="edit-plan-form-rate" step="0.1">％</td>
                                             <td><input type="number" class="edit-plan-form-amount">万</td>
-                                            <td><button type="button" class="edit-plan-form-remove">-</button></td>
                                             <td><button type="button" class="edit-plan-form-insert">+</button></td>
+                                            <td><button type="button" class="edit-plan-form-remove">-</button></td>
                                         </tr>
                                     </tbody>
                                 </table>
