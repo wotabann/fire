@@ -6,6 +6,7 @@ function initialize() {
 
   $("#edit-plan-request-button").on("click", () => { registerPlan(); });
   $("#edit-select-button").on("click", () => { selectEditPlan(); });
+  $("#progress-button").on("click", () => { progress(); });
   $("#simulate-button").on("click", () => { simulate(); });
   $("#edit-plan-details").find(".edit-plan-form-insert").on("click", function(){insertEditDetail($(this))});
   $("#edit-plan-details").find(".edit-plan-form-remove").on("click", function(){removeEditDetail($(this))});
@@ -15,6 +16,23 @@ function initialize() {
 }
 
 
+//---------------------------------------------------
+// Plan registries
+//---------------------------------------------------
+function initializePlans() {
+  if (getRegisteredPlans() !== null) {
+    //return;
+  }
+  const details1 = [{term: 10, rate: "3.0", amount: 5}];
+  const details2 = [{term: 10, rate: "4.0", amount: 5}];
+  const details3 = [{term: 10, rate: "5.0", amount: 5}];
+  const plans = [
+    { id: 0, name: "100万/3%/5万", value: 100,  year: 2026, month: 4, details: details1},
+    { id: 1, name: "100万/4%/5万", value: 100,  year: 2026, month: 4, details: details2},
+    { id: 2, name: "100万/5%/5万", value: 100,  year: 2026, month: 4, details: details3},
+  ];
+  localStorage.setItem("fire-plans", JSON.stringify(plans));
+}
 function getRegisteredPlans() {
   json = localStorage.getItem("fire-plans");
   if (json === null) {
@@ -35,23 +53,11 @@ function getRegisteredPlans() {
 }
 
 
-function initializePlans() {
-  if (getRegisteredPlans !== null) {
-    return;
-  }
-  const details = [
-    {term: 10, rate: "4.0", amount: 5}
-  ];
-  const plans = [
-    { id: 0, name: "planA", value: 100,  year: 2026, month: 4, details: details},
-    { id: 1, name: "planB", value: 100,  year: 2026, month: 4, details: details},
-    { id: 2, name: "planC", value: 100,  year: 2026, month: 4, details: details}
-  ];
-  localStorage.setItem("fire-plans", JSON.stringify(plans));
-}
 
 
-
+//---------------------------------------------------
+// Select Edit Plan
+//---------------------------------------------------
 function selectEditPlan() {
   let id = parseInt($("#edit-select").val());
   let plans = getRegisteredPlans();
@@ -69,6 +75,9 @@ function refreshEditSelectSection() {
 
 
 
+//---------------------------------------------------
+// Edit Plan
+//---------------------------------------------------
 function showEditPlanDialog() {
   $("#dialog").show();
 }
@@ -134,7 +143,63 @@ function registerPlan() {
   hideEditPlanDialog();
 }
 
+//---------------------------------------------------
+// Progress
+//---------------------------------------------------
+function progress() {
+  refreshProgressTable(getRegisteredPlans());
+  showProgressTable();
+}
+function showProgressTable() {
+  $("#progress-table").show();
+}
+function refreshProgressTable(plans) {
+  const assets = $("#progress-form-assets").val();
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  let html_tbody_tr = "";
+  for (let p = 0; p < plans.length; p++) {
+    const plannedAssets = calculateProgress(year, month, plans[p]);
+    let valueDiff = (assets - plannedAssets);
+    let rateDiff  = ((assets - plannedAssets) / plannedAssets);
+    valueDiff = ((valueDiff > 0) ? "+" : "") + assetsToString(valueDiff);
+    rateDiff *= 100;
+    rateDiff = (Math.round(rateDiff * 100) / 100);
+    rateDiff = ((rateDiff > 0) ? "+" : "") + rateDiff.toString() + "%";
+    html_tbody_tr += "<tr>";
+    html_tbody_tr += "<td>" + plans[p].name + "</td>";
+    html_tbody_tr += "<td>" + assetsToString(plannedAssets) + "</td>";
+    html_tbody_tr += "<td>" + valueDiff + "</td>";
+    html_tbody_tr += "<td>" + rateDiff + "</td>";
+    html_tbody_tr += "</tr>";
+  }
+  $("#progress-tbody").html(html_tbody_tr);
+}
+function calculateProgress(year, month, plan) {
+  let elapsedYear  = year - plan.year;
+  let elapsedMonth = (month - plan.month + 1) + ((month < plan.month) ? 12 : 0);
+  let elapcedCount = (elapsedYear * 12) + elapsedMonth;
+  let cnt = 0;
+  let assets = plan.value;
+  for (let d = 0; d < plan.details.length; d++) {
+    let rate   = plan.details[d].rate;
+    let amount = plan.details[d].amount;
+    for (let t = 0; t < plan.details[d].term; t++) {
+      cnt++;
+      assets *= ((1 + rate / 100));
+      if (cnt >= elapcedCount) {
+        return Math.round(assets);
+      }
+      assets += amount;
+    }
+  }
+}
 
+
+//---------------------------------------------------
+// Simulate
+//---------------------------------------------------
 function simulate() {
   refreshSimulateTable(getRegisteredPlans());
   showSimulateTable();
@@ -164,7 +229,6 @@ function refreshSimulateTable(plans) {
 
   // ヘッダ行を作成
   {
-    let html_thead = $("#simulate-thead");
     let html_thead_tr = "";
     html_thead_tr += "<tr>";
     html_thead_tr += "<th>年目</th>";
@@ -173,7 +237,7 @@ function refreshSimulateTable(plans) {
       html_thead_tr += "<th>" + plans[p].name + "</th>";
     }
     html_thead_tr += "</tr>";
-    html_thead.html(html_thead_tr);
+    $("#simulate-thead").html(html_thead_tr);
   }
 
   // 先に空行を作成
@@ -200,7 +264,7 @@ function refreshSimulateTable(plans) {
 
   // 行に記入
   {
-    let html_trs = $("#simulate-plan-tbody").find("tr");
+    let html_trs = $("#simulate-tbody").find("tr");
     for (let p = 0; p < plans.length; p++) {
       let assets = plans[p].value;
       let year = minYear;
@@ -232,6 +296,11 @@ function refreshSimulateTable(plans) {
   }
 }
 
+
+
+//---------------------------------------------------
+// Utilities
+//---------------------------------------------------
 function assetsToString(assets) {
   if (assets < 10000) {
     return Math.round(assets).toString() + "万";
