@@ -273,6 +273,31 @@ body:has(dialog[open]) {
 
 
 /******************************************************************************/
+/* edit-select                                                                */
+/******************************************************************************/
+#edit-select {
+  display: inline-block;
+  padding: 5px;
+  font-size: 0.9rem;
+  width: 60%;
+  height: 30px;
+  margin: 0;
+  text-align: left;
+  vertical-align: center;
+}
+#edit-select-button {
+  display: inline-block;
+  width: 16%;
+  height: 36px;
+  padding: 2px;
+  font-size: 0.85rem;
+  margin-top: 5px;
+  margin-left: 10px;
+  vertical-align: center;
+}
+
+
+/******************************************************************************/
 /* edit-plan                                                                  */
 /******************************************************************************/
 #edit-plan h1 {
@@ -282,14 +307,14 @@ body:has(dialog[open]) {
   color: #333;
 }
 .edit-plan-request-button {
-  width: 40%;
+  width: 30%;
   background-color: rgba(0, 164, 105, 1.0);
 }
-.edit-plan-request-simulate-button {
-  width: 40%;
-  background: linear-gradient(135deg, rgba(0, 164, 105, 1.0) 0%, rgba(0, 164, 105, 1.0) 50%, rgba(0, 73, 134, 1.0) 50%, rgba(0, 73, 134, 1.0) 100%);
+.edit-plan-id {
+  display: none;
 }
 #edit-plan-id {
+  display: none;
   width: 80px;
 }
 #edit-plan-name {
@@ -301,11 +326,11 @@ body:has(dialog[open]) {
 }
 #edit-plan-start-year {
   width: 80px;
-  margin-right: 5px;
+  margin-right: 8px;
 }
 #edit-plan-start-month {
-  width: 80px;
-  margin-right: 5px;
+  width: 60px;
+  margin-left: 8px;
 }
 .edit-plan-form-term {
   margin-right: 5px;
@@ -324,8 +349,8 @@ body:has(dialog[open]) {
 }
 .edit-plan-form-insert,
 .edit-plan-form-remove {
-  width: 20px;
-  height: 20px;
+  width: 25px;
+  height: 25px;
   margin: 0;
   padding: 0;
   border-radius: 20px;
@@ -333,6 +358,43 @@ body:has(dialog[open]) {
   vertical-align: middle;
 }
 
+
+
+/******************************************************************************/
+/* progress                                                                   */
+/******************************************************************************/
+#progress-form-assets {
+  width: 80px;
+  margin-right: 5px;
+  padding: 3px;
+}
+#progress-button {
+  border: 1px solid;
+  width: 150px;
+  background-color: rgba(0, 73, 134, 1.0);
+  display: inline-block;
+  width: 16%;
+  height: 36px;
+  padding: 2px;
+  font-size: 0.85rem;
+  margin-top: 5px;
+  margin-left: 10px;
+  vertical-align: center;
+}
+
+
+/******************************************************************************/
+/* simulate                                                                   */
+/******************************************************************************/
+#simulate-table {
+  display: none;
+  height: 500px;
+}
+#simulate-button {
+  border: 1px solid;
+  width: 150px;
+  background-color: rgba(0, 73, 134, 1.0);
+}
 
 
 
@@ -372,7 +434,7 @@ body:has(dialog[open]) {
 
 
 /******************************************************************************/
-/* table                                                                 */
+/* table                                                                      */
 /******************************************************************************/
 .table-wrapper {
   overflow-x: auto;
@@ -585,6 +647,17 @@ table td:first-child::before {
   display: inline-block;
   font-size: 0.80rem;
   cursor: pointer;
+}
+#dialog-close-button {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 40px;
+  height: 40px;
+  border-radius: 30px;
+  margin: 0;
+  padding: 0;
+  font-size: 20px;
 }
 
 

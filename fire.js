@@ -3,14 +3,15 @@ initialize();
 
 function initialize() {
   initializePlans();
+
   $("#edit-plan-request-button").on("click", () => { registerPlan(); });
+  $("#edit-select-button").on("click", () => { selectEditPlan(); });
+  $("#simulate-button").on("click", () => { simulate(); });
   $("#edit-plan-details").find(".edit-plan-form-insert").on("click", function(){insertEditDetail($(this))});
   $("#edit-plan-details").find(".edit-plan-form-remove").on("click", function(){removeEditDetail($(this))});
+  $("#dialog-close-button").on("click", () => { $("#dialog").hide() });
 
-  const plans = getRegisteredPlans();
-  showEditPlan(plans[0]);
-
-  simulatePlans(plans);
+  refreshEditSelectSection();
 }
 
 
@@ -50,7 +51,31 @@ function initializePlans() {
 }
 
 
-function showEditPlan(plan) {
+
+function selectEditPlan() {
+  let id = parseInt($("#edit-select").val());
+  let plans = getRegisteredPlans();
+  refreshEditPlanDialog(plans[id]);
+  showEditPlanDialog();
+}
+function refreshEditSelectSection() {
+  let plans = getRegisteredPlans();
+  let html = "";
+  for (let i = 0; i < plans.length; i++) {
+    html += "<option value=" + i + ">" + plans[i].name + "</option>";
+  }
+  $("#edit-select").html(html);
+}
+
+
+
+function showEditPlanDialog() {
+  $("#dialog").show();
+}
+function hideEditPlanDialog() {
+  $("#dialog").hide();
+}
+function refreshEditPlanDialog(plan) {
   $("#edit-plan-id").val(plan.id);
   $("#edit-plan-name").val(plan.name);
   $("#edit-plan-start-value").val(plan.value);
@@ -75,15 +100,11 @@ function showEditPlan(plan) {
   }
   $(html_tr_head).remove();
 }
-
-
 function insertEditDetail(button) {
   let html_tr_base = $(button).closest("tr");
   let html_tr_clone = $(html_tr_base).clone(true);
   $(html_tr_base).after($(html_tr_clone));
 }
-
-
 function removeEditDetail(button) {
   let html_tr_base = $(button).closest("tr");
   let trCount = $(html_tr_base).closest("tbody").find("tr").length;
@@ -91,8 +112,6 @@ function removeEditDetail(button) {
     $(html_tr_base).remove();
   }
 }
-
-
 function registerPlan() {
   let id    = $("#edit-plan-id").val();
   let plans = getRegisteredPlans();
@@ -112,23 +131,18 @@ function registerPlan() {
   }
   localStorage.setItem("fire-plans", JSON.stringify(plans));
   alert("登録しました。");
-  return;
-
-  for (let i = 0; i < plans[id].details.length; i++) {
-    let term = $(html_trs[i]).find(".edit-plan-form-term").val();
-    let rate = $(html_trs[i]).find(".edit-plan-form-rate").val();
-    let amount = $(html_trs[i]).find(".edit-plan-form-amount").val();
-    plans[id].details[i].term = term;
-    plans[id].details[i].rate = rate;
-    plans[id].details[i].amount = amount;
-  }
-  localStorage.setItem("fire-plans", JSON.stringify(plans));
-  alert("登録しました。");
+  hideEditPlanDialog();
 }
 
 
-
-function simulatePlans(plans) {
+function simulate() {
+  refreshSimulateTable(getRegisteredPlans());
+  showSimulateTable();
+}
+function showSimulateTable() {
+  $("#simulate-table").show();
+}
+function refreshSimulateTable(plans) {
   // 開始～終了の最大期間を計算
   let v1 = 210001;
   let v2 = 200001;
@@ -150,7 +164,7 @@ function simulatePlans(plans) {
 
   // ヘッダ行を作成
   {
-    let html_thead = $("#simulate-plan-thead");
+    let html_thead = $("#simulate-thead");
     let html_thead_tr = "";
     html_thead_tr += "<tr>";
     html_thead_tr += "<th>年目</th>";
@@ -159,7 +173,7 @@ function simulatePlans(plans) {
       html_thead_tr += "<th>" + plans[p].name + "</th>";
     }
     html_thead_tr += "</tr>";
-    html_thead.append(html_thead_tr);
+    html_thead.html(html_thead_tr);
   }
 
   // 先に空行を作成
@@ -167,6 +181,7 @@ function simulatePlans(plans) {
     let maxRow = (maxYear - minYear) * 12;
     let year = minYear;
     let month = minMonth;
+    $("#simulate-tbody").html("");
     for (let row = 0; row < maxRow; row++) {
       month = ((minMonth - 1 + row) % 12) + 1;
       year += ((row > 0) && (month == 1)) ? 1 : 0;
@@ -179,7 +194,7 @@ function simulatePlans(plans) {
         html_tbody_tr += "<td>-</td>";
       }
       html_tbody_tr += "</tr>";
-      $("#simulate-plan-tbody").append(html_tbody_tr);
+      $("#simulate-tbody").append(html_tbody_tr);
     }
   }
 
