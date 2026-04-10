@@ -28,12 +28,22 @@ function initializePlans() {
   }
 }
 function makeInitialPlans() {
-  const details0 = [{term: 120, rate: "3.1", amount: 5}];
-  const details1 = [{term: 120, rate: "3.5", amount: 5}];
+  const details0 = [
+    {term: 6,  rate: "1.5", amount: 3},
+    {term: 6,  rate: "2.0", amount: 3},
+    {term: 24, rate: "2.5", amount: 3},
+    {term: 24, rate: "3.0", amount: 5},
+    {term: 60, rate: "3.8", amount: 5},
+  ];
+  const details1 = [
+    {term: 12, rate: "1.0", amount: 3},
+    {term: 12, rate: "2.0", amount: 3},
+    {term: 96, rate: "3.5", amount: 5},
+  ];
   const details2 = [{term: 120, rate: "4.0", amount: 5}];
   const plans = [
-    { id: 0, name: "planA", description: "10年で1億", value: 100,  year: 2026, month: 4, details: details0},
-    { id: 1, name: "planB", description: "10年で1.5億", value: 100,  year: 2026, month: 4, details: details1},
+    { id: 0, name: "planA", description: "10年で1億①", value: 100,  year: 2026, month: 4, details: details0},
+    { id: 1, name: "planB", description: "10年で1億②", value: 100,  year: 2026, month: 4, details: details1},
     { id: 2, name: "planC", description: "10年で2.5億", value: 100,  year: 2026, month: 4, details: details2},
   ];
   return plans;
@@ -165,8 +175,8 @@ function registerPlan() {
   hideEditPlanDialog();
   plans = loadRegisteredPlans();
   refreshEditSelectSection(plans);
-  refreshProgressTable(plans);
-  refreshSimulateTable(plans);
+  hideProgressTable(plans);
+  hideSimulateTable(plans);
 }
 function validatePlan(plan) {
   if (plan.name == "") {
@@ -203,21 +213,25 @@ function validatePlan(plan) {
 // Progress
 //---------------------------------------------------
 function progress() {
+  const assets = $("#progress-form-assets").val();
+  if (isOutOfRange(assets, -100000, 100000)) {
+    alert("現在資産が不正です。");
+    return;
+  }
   refreshProgressTable(loadRegisteredPlans());
   showProgressTable();
 }
 function showProgressTable() {
   $("#progress-table").show();
 }
+function hideProgressTable() {
+  $("#progress-table").hide();
+}
 function refreshProgressTable(plans) {
   const assets = $("#progress-form-assets").val();
   const now = new Date();
   const year = now.getFullYear();
   const month = now.getMonth() + 1;
-  if (isOutOfRange(assets, -100000, 100000)) {
-    alert("現在資産が不正です。");
-    return;
-  }
   let html_tbody_tr = "";
   for (let p = 0; p < plans.length; p++) {
     const plannedAssets = calculateProgress(year, month, plans[p]);
@@ -267,6 +281,9 @@ function simulate() {
 }
 function showSimulateTable() {
   $("#simulate-table").show();
+}
+function hideSimulateTable() {
+  $("#simulate-table").hide();
 }
 function refreshSimulateTable(plans) {
   // 開始～終了の最大期間を計算
