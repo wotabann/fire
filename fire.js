@@ -288,15 +288,21 @@ function hideSimulateTable() {
 function refreshSimulateTable(plans) {
   // 開始～終了の最大期間を計算
   let v1 = 210001;
-  let v2 = 200001;
+  let v2 = 190001;
   for (let p = 0; p < plans.length; p++) {
     let y1 = plans[p].year;
     let m1 = plans[p].month;
     let y2 = y1;
     let m2 = m1;
+    let m  = m1;
     for (let d = 0; d < plans[p].details.length; d++) {
-      y2 += Math.round(plans[p].details[d].term / 12);
-      y2 += ((plans[p].details[d].term % 12) > 0) ? 1 : 0;
+      for (let t = 0; t < plans[p].details[d].term; t++) {
+        m++;
+        if (m > 12) {
+          y2++;
+          m = 1;
+        }
+      }
     }
     v1 = Math.min(v1, parseInt(y1.toString() + m1.toString().padStart(2, "0")));
     v2 = Math.max(v2, parseInt(y2.toString() + m2.toString().padStart(2, "0")));
