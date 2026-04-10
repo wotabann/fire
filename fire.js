@@ -10,9 +10,9 @@ function initialize() {
   $("#simulate-button").on("click", () => { simulate(); });
   $("#edit-plan-details").find(".edit-plan-form-insert").on("click", function(){insertEditDetail($(this))});
   $("#edit-plan-details").find(".edit-plan-form-remove").on("click", function(){removeEditDetail($(this))});
-  $("#dialog-close-button").on("click", () => { $("#dialog").hide() });
+  $("#dialog-close-button").on("click", () => { hideEditPlanDialog() });
 
-  let plans = getRegisteredPlans();
+  let plans = loadRegisteredPlans();
   refreshEditSelectSection(plans);
 }
 
@@ -28,17 +28,17 @@ function initializePlans() {
   }
 }
 function makeInitialPlans() {
-  const details0 = [{term: 120, rate: "3.0", amount: 5}];
-  const details1 = [{term: 120, rate: "4.0", amount: 5}];
-  const details2 = [{term: 120, rate: "5.0", amount: 5}];
+  const details0 = [{term: 120, rate: "3.1", amount: 5}];
+  const details1 = [{term: 120, rate: "3.5", amount: 5}];
+  const details2 = [{term: 120, rate: "4.0", amount: 5}];
   const plans = [
-    { id: 0, name: "planA", description: "初期100万 / 月利3% / 積立5万", value: 100,  year: 2026, month: 4, details: details0},
-    { id: 1, name: "planB", description: "初期100万 / 月利4% / 積立5万", value: 100,  year: 2026, month: 4, details: details1},
-    { id: 2, name: "planC", description: "初期100万 / 月利5% / 積立5万", value: 100,  year: 2026, month: 4, details: details2},
+    { id: 0, name: "planA", description: "10年で1億", value: 100,  year: 2026, month: 4, details: details0},
+    { id: 1, name: "planB", description: "10年で1.5億", value: 100,  year: 2026, month: 4, details: details1},
+    { id: 2, name: "planC", description: "10年で2.5億", value: 100,  year: 2026, month: 4, details: details2},
   ];
   return plans;
 }
-function getRegisteredPlans() {
+function loadRegisteredPlans() {
   if (!window.localStorage) {
     return makeInitialPlans();
   }
@@ -68,7 +68,7 @@ function getRegisteredPlans() {
 //---------------------------------------------------
 function selectEditPlan() {
   let id = parseInt($("#edit-select").val());
-  let plans = getRegisteredPlans();
+  let plans = loadRegisteredPlans();
   refreshEditPlanDialog(plans[id]);
   showEditPlanDialog();
 }
@@ -86,10 +86,12 @@ function refreshEditSelectSection(plans) {
 // Edit Plan
 //---------------------------------------------------
 function showEditPlanDialog() {
+  $("#edit-select").prop("disabled", true);
   $("#dialog").show();
 }
 function hideEditPlanDialog() {
   $("#dialog").hide();
+  $("#edit-select").prop("disabled", false);
 }
 function refreshEditPlanDialog(plan) {
   $("#edit-plan-id").val(plan.id);
@@ -131,7 +133,7 @@ function removeEditDetail(button) {
 }
 function registerPlan() {
   let id    = $("#edit-plan-id").val();
-  let plans = getRegisteredPlans();
+  let plans = loadRegisteredPlans();
   plans[id].name  = $("#edit-plan-name").val();
   plans[id].description  = $("#edit-plan-description").val();
   plans[id].value = $("#edit-plan-start-value").val();
@@ -147,20 +149,61 @@ function registerPlan() {
     let detail = {"term": term, "rate": rate, "amount": amount};
     plans[id].details[i] = detail;
   }
-  localStorage.setItem("fire-plans", JSON.stringify(plans));
-  alert("登録しました。");
+  errorMessage = validatePlan(plans[id]);
+  if (errorMessage != "") {
+    alert(errorMessage);
+    return;
+  }
+  try {
+    localStorage.setItem("fire-plans", JSON.stringify(plans));
+    alert("登録しました。");
+  }
+  catch {
+    alert("登録に失敗しました。");
+    return;
+  }
   hideEditPlanDialog();
-  plans = getRegisteredPlans();
+  plans = loadRegisteredPlans();
   refreshEditSelectSection(plans);
   refreshProgressTable(plans);
   refreshSimulateTable(plans);
 }
+function validatePlan(plan) {
+  if (plan.name == "") {
+    return "プラン名が空欄です。";
+  }
+  if (isOutOfRange(plan.value, 0, 1000000)) {
+    return "開始額が不正です。";
+  }
+  if (isOutOfRange(plan.year, 1900, 2100)) {
+    return "開始年が不正です。";
+  }
+  if (isOutOfRange(plan.month, 1, 12)) {
+    return "開始月が不正です。";
+  }
+  for (let i = 0; i < plan.details.length; i++) {
+    let term = plan.details[i].term;
+    let rate = plan.details[i].rate;
+    let amount = plan.details[i].amount;
+    if (isOutOfRange(term, 1, 600)) {
+      return "期間が不正です。";
+    }
+    if (isOutOfRange(rate, -100, 100)) {
+      return "月利が不正です。";
+    }
+    if (isOutOfRange(amount, -1000, 1000)) {
+      return "積立額が不正です。";
+    }
+  }
+  return "";
+}
+
 
 //---------------------------------------------------
 // Progress
 //---------------------------------------------------
 function progress() {
-  refreshProgressTable(getRegisteredPlans());
+  refreshProgressTable(loadRegisteredPlans());
   showProgressTable();
 }
 function showProgressTable() {
@@ -171,6 +214,10 @@ function refreshProgressTable(plans) {
   const now = new Date();
   const year = now.getFullYear();
   const month = now.getMonth() + 1;
+  if (isOutOfRange(assets, -100000, 100000)) {
+    alert("現在資産が不正です。");
+    return;
+  }
   let html_tbody_tr = "";
   for (let p = 0; p < plans.length; p++) {
     const plannedAssets = calculateProgress(year, month, plans[p]);
@@ -215,7 +262,7 @@ function calculateProgress(year, month, plan) {
 // Simulate
 //---------------------------------------------------
 function simulate() {
-  refreshSimulateTable(getRegisteredPlans());
+  refreshSimulateTable(loadRegisteredPlans());
   showSimulateTable();
 }
 function showSimulateTable() {
@@ -316,6 +363,26 @@ function refreshSimulateTable(plans) {
 //---------------------------------------------------
 // Utilities
 //---------------------------------------------------
+function isOutOfRange(v, min, max) {
+  if (v == null) {
+    return true;
+  }
+  if (v == "") {
+    return true;
+  }
+  if (isNaN(v)) {
+    return true;
+  }
+  v = Number(v);
+  if (v < min) {
+    return true;
+  }
+  if (v > max) {
+    return true;
+  }
+  return false;
+}
+
 function assetsToString(assets) {
   if (assets < 10000) {
     return Math.round(assets).toString() + "万";

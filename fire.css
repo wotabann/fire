@@ -373,7 +373,7 @@ input {
   display: none;
 }
 #progress-form-assets {
-  width: 80px;
+  width: 100px;
   margin-right: 5px;
   padding: 3px;
 }
@@ -455,7 +455,7 @@ table {
   text-align: right;
   white-space: nowrap;
   border-collapse: separate;
-  border-spacing: 5px 4px;
+  border-spacing: 3px 4px;
   margin: 0 auto;
 }
 table tr {
