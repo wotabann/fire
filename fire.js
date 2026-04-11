@@ -17,9 +17,10 @@ function initialize() {
 }
 
 
-//---------------------------------------------------
+
+//------------------------------------------------------------------------------
 // Plan registries
-//---------------------------------------------------
+//------------------------------------------------------------------------------
 function initializePlans() {
   let plans = localStorage.getItem("fire-plans");
   if (plans === null) {
@@ -42,9 +43,9 @@ function makeInitialPlans() {
   ];
   const details2 = [{term: 120, rate: "4.0", amount: 5}];
   const plans = [
-    { id: 0, name: "planA", description: "10年で1億①", value: 100,  year: 2026, month: 4, details: details0},
-    { id: 1, name: "planB", description: "10年で1億②", value: 100,  year: 2026, month: 4, details: details1},
-    { id: 2, name: "planC", description: "10年で2.5億", value: 100,  year: 2026, month: 4, details: details2},
+    { id: 0, name: "planA", description: "10年で1億①", value: 100,  year: 2026, month: 4, tax: true, details: details0},
+    { id: 1, name: "planB", description: "10年で1億②", value: 100,  year: 2026, month: 4, tax: true, details: details1},
+    { id: 2, name: "planC", description: "10年で2.5億", value: 100,  year: 2026, month: 4, tax: true, details: details2},
   ];
   return plans;
 }
@@ -73,9 +74,9 @@ function loadRegisteredPlans() {
 
 
 
-//---------------------------------------------------
+//------------------------------------------------------------------------------
 // Select Edit Plan
-//---------------------------------------------------
+//------------------------------------------------------------------------------
 function selectEditPlan() {
   let id = parseInt($("#edit-select").val());
   let plans = loadRegisteredPlans();
@@ -92,9 +93,9 @@ function refreshEditSelectSection(plans) {
 
 
 
-//---------------------------------------------------
+//------------------------------------------------------------------------------
 // Edit Plan
-//---------------------------------------------------
+//------------------------------------------------------------------------------
 function showEditPlanDialog() {
   $("#edit-select").prop("disabled", true);
   $("#dialog").show();
@@ -110,6 +111,7 @@ function refreshEditPlanDialog(plan) {
   $("#edit-plan-start-value").val(plan.value);
   $("#edit-plan-start-year").val(plan.year);
   $("#edit-plan-start-month").val(plan.month);
+  $("#edit-plan-tax").prop("checked", plan.tax);
 
   let html_trs = $("#edit-plan-details").children("tr");
   for (let i = 1; i < html_trs.length; i++) {
@@ -149,6 +151,7 @@ function registerPlan() {
   plans[id].value = $("#edit-plan-start-value").val();
   plans[id].year  = $("#edit-plan-start-year").val();
   plans[id].month  = $("#edit-plan-start-month").val();
+  plans[id].tax = $("#edit-plan-tax").prop("checked");
   let html_trs = $("#edit-plan-details").children("tr");
 
   plans[id].details = [];
@@ -209,9 +212,9 @@ function validatePlan(plan) {
 }
 
 
-//---------------------------------------------------
+//------------------------------------------------------------------------------
 // Progress
-//---------------------------------------------------
+//------------------------------------------------------------------------------
 function progress() {
   const assets = $("#progress-form-assets").val();
   if (isOutOfRange(assets, -100000, 100000)) {
@@ -252,6 +255,7 @@ function refreshProgressTable(plans) {
   $("#progress-tbody").html(html_tbody_tr);
 }
 function calculateProgress(year, month, plan) {
+  let taxRate = plan.tax ? 0.20315 : 0.0;
   let elapsedYear  = year - plan.year;
   let elapsedMonth = (month - plan.month + 1) + ((month < plan.month) ? 12 : 0);
   let elapcedCount = (elapsedYear * 12) + elapsedMonth;
@@ -261,8 +265,11 @@ function calculateProgress(year, month, plan) {
     let rate   = plan.details[d].rate;
     let amount = plan.details[d].amount;
     for (let t = 0; t < plan.details[d].term; t++) {
+      //assets *= ((1 + rate / 100));
+      let profit = (assets * rate / 100);
+      let tax = profit * taxRate;
+      assets += profit - tax;
       cnt++;
-      assets *= ((1 + rate / 100));
       if (cnt >= elapcedCount) {
         return Math.round(assets);
       }
@@ -272,9 +279,11 @@ function calculateProgress(year, month, plan) {
 }
 
 
-//---------------------------------------------------
+
+
+//------------------------------------------------------------------------------
 // Simulate
-//---------------------------------------------------
+//------------------------------------------------------------------------------
 function simulate() {
   refreshSimulateTable(loadRegisteredPlans());
   showSimulateTable();
@@ -313,16 +322,26 @@ function refreshSimulateTable(plans) {
   let maxMonth = parseInt(v2.toString().substring(4, 6));
 
   // ヘッダ行を作成
+  //{
+  //  let html_thead_tr = "";
+  //  html_thead_tr += "<tr>";
+  //  html_thead_tr += "<th>年目</th>";
+  //  html_thead_tr += "<th>年/月</th>";
+  //  for (let p = 0; p < plans.length; p++) {
+  //    html_thead_tr += "<th>" + plans[p].name + "</th>";
+  //  }
+  //  html_thead_tr += "</tr>";
+  //  $("#simulate-thead").html(html_thead_tr);
+  //}
   {
-    let html_thead_tr = "";
-    html_thead_tr += "<tr>";
-    html_thead_tr += "<th>年目</th>";
-    html_thead_tr += "<th>年/月</th>";
+    let html_thead = $("#simulate-thead");
+    html_thead.html("");
+    let html_tr = $("<tr></tr>").appendTo(html_thead);
+    $("<th></th>").appendTo(html_tr).text("年目");
+    $("<th></th>").appendTo(html_tr).text("年/月");
     for (let p = 0; p < plans.length; p++) {
-      html_thead_tr += "<th>" + plans[p].name + "</th>";
+      $("<th></th>").appendTo(html_tr).text(plans[p].name);
     }
-    html_thead_tr += "</tr>";
-    $("#simulate-thead").html(html_thead_tr);
   }
 
   // 先に空行を作成
@@ -352,6 +371,7 @@ function refreshSimulateTable(plans) {
     let html_trs = $("#simulate-tbody").find("tr");
     for (let p = 0; p < plans.length; p++) {
       let assets = plans[p].value;
+      let taxRate = plans[p].tax ? 0.20315 : 0.0;
       let year = minYear;
       let month = minMonth;
       let maxRow = (maxYear - minYear) * 12;
@@ -363,18 +383,45 @@ function refreshSimulateTable(plans) {
           break;
         }
       }
+      let totalMonth = 0;
+      let totalGain = 0.0;
+      let totalAmount = 0.0;
+      let totalTax = 0.0;
       for (let d = 0; d < plans[p].details.length; d++) {
         let term   = plans[p].details[d].term;
         let rate   = plans[p].details[d].rate;
         let amount = plans[p].details[d].amount;
         for (let t = 0; t < term; t++) {
+          // html要素
           let html_tr  = $(html_trs[row]);
           let html_tds = $(html_tr).find("td");
           let html_td  = $(html_tds[p+2]);
-          assets = assets * ((1 + rate / 100));
+
+          // その月の計算
+          let profit = (assets * rate / 100);
+          let tax = profit * taxRate;
+          let gain = profit -tax;
+          assets += gain;
           html_td.html(assetsToString(assets));
-          assets += amount;
           row++;
+
+          // トータル計算
+          totalMonth++;
+          totalGain += gain;
+          totalTax += tax;
+
+          // tooltip用のデータを仕込む
+          html_td.data("plan-name", plans[p].name);
+          html_td.data("plan-description", plans[p].description);
+          html_td.data("total-month", totalMonth);
+          html_td.data("total-gain", totalGain);
+          html_td.data("total-amount", totalAmount);
+          html_td.data("total-tax", totalTax);
+          html_td.addClass("simulate-detail");
+
+          // 最初の月は積み立てしない
+          totalAmount += amount;
+          assets += amount;
         }
       }
     }    
@@ -383,9 +430,138 @@ function refreshSimulateTable(plans) {
 
 
 
-//---------------------------------------------------
+
+//------------------------------------------------------------------------------
+// Simulate Popup
+//------------------------------------------------------------------------------
+function refreshTooltip(html_td) {
+  const planName = html_td.data("plan-name");
+  const planDescription = html_td.data("plan-description");
+  const totalMonth = html_td.data("total-month");
+  const totalGain = Math.round(html_td.data("total-gain")).toString() + "万円";
+  const totalAmount = html_td.data("total-amount") + "万円";
+  const totalTax = Math.round(html_td.data("total-tax")).toString() + "万円";
+  const elapsed = Math.floor(totalMonth / 12).toString() + "年 " + (totalMonth % 12).toString() + "ヶ月";
+  $("#simulate-tooltip-plan-name").text(planName);
+  $("#simulate-tooltip-plan-description").text(planDescription);
+  $("#simulate-tooltip-total-month").text(elapsed);
+  $("#simulate-tooltip-total-gain").text(totalGain);
+  $("#simulate-tooltip-total-amount").text(totalAmount);
+  $("#simulate-tooltip-total-tax").text(totalTax);
+}
+
+$(function () {
+
+  const tooltip = $("#simulate-tooltip");
+  const arrow = $("#simulate-tooltip-arrow");
+  const arrowBorder = $("#simulate-tooltip-arrow-border");
+  let currentCell = null;
+
+  /* =========================
+     tdクリック（イベント委譲）
+  ========================= */
+  $("#simulate-table").on("click", ".simulate-detail", function (e) {
+    e.stopPropagation();
+
+    // 画面外セルは無視
+    const rect = this.getBoundingClientRect();
+    if (rect.bottom < 0 || rect.top > window.innerHeight) return;
+
+    // 同じセル再クリックで閉じる（トグル）
+    if (currentCell === this) {
+      tooltip.fadeOut(150);
+      currentCell = null;
+      return;
+    }
+    currentCell = this;
+
+    /* ===== tooltip内容更新 ===== */
+    refreshTooltip($(this));
+    tooltip.stop(true,true).fadeIn(150);
+
+    /* ===== 位置計算 ===== */
+    const tdWidth  = rect.width;
+    const tdHeight = rect.height;
+
+    const tooltipWidth  = tooltip.outerWidth();
+    const tooltipHeight = tooltip.outerHeight();
+
+    const windowWidth  = window.innerWidth;
+    const windowHeight = window.innerHeight;
+
+    // 基本：セル中央の下
+    let left = rect.left + tdWidth/2 - tooltipWidth/2;
+    let top  = rect.bottom + 10;
+    let showAbove = false;
+
+    /* 右端・左端はみ出し防止 */
+    if (left + tooltipWidth > windowWidth - 10)
+      left = windowWidth - tooltipWidth - 10;
+
+    if (left < 10) left = 10;
+
+    /* 下にはみ出すなら上表示 */
+    if (top + tooltipHeight > windowHeight) {
+      top = rect.top - tooltipHeight - 10;
+      showAbove = true;
+    }
+
+    /* 矢印向き */
+    arrow.removeClass("arrow-top arrow-bottom");
+    arrowBorder.removeClass("arrow-top-border arrow-bottom-border");
+    if (showAbove) {
+      arrow.addClass("arrow-bottom");
+      arrowBorder.addClass("arrow-bottom-border");
+    } else {
+      arrow.addClass("arrow-top");
+      arrowBorder.addClass("arrow-top-border");
+    }
+
+    /* 矢印の横位置 */
+    let arrowLeft = rect.left + tdWidth/2 - left - 8;
+    arrowLeft = Math.max(12, arrowLeft);
+    arrowLeft = Math.min(tooltipWidth - 20, arrowLeft);
+    arrow.css("left", arrowLeft);
+    arrowBorder.css("left", arrowLeft - 2);
+
+    /* ここ重要：スクロール量を足す */
+    tooltip.css({
+      top:  top + window.scrollY,
+      left: left + window.scrollX
+    });
+  });
+
+  /* =========================
+     外クリックで閉じる
+  ========================= */
+  $(document).on("click", function () {
+    tooltip.fadeOut(150);
+    currentCell = null;
+  });
+
+  tooltip.on("click", function (e) {
+    e.stopPropagation();
+  });
+
+  /* =========================
+     スクロール時は閉じる
+  ========================= */
+  $(window).on("scroll", function () {
+    tooltip.fadeOut(100);
+    currentCell = null;
+  });
+
+  $("#table-wrapper").on("scroll", function () {
+    tooltip.fadeOut(100);
+    currentCell = null;
+  });
+});
+
+
+
+//------------------------------------------------------------------------------
 // Utilities
-//---------------------------------------------------
+//------------------------------------------------------------------------------
 function isOutOfRange(v, min, max) {
   if (v == null) {
     return true;

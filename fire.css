@@ -404,41 +404,10 @@ input {
   width: 150px;
   background-color: rgba(0, 73, 134, 1.0);
 }
+#simulate-table .simulate-detail {
+  cursor: pointer;
+}
 
-
-
-/******************************************************************************/
-/* dump                                                                       */
-/******************************************************************************/
-#dump h1 {
-  color: rgba(0, 73, 134, 1.0);
-}
-#dump h2 {
-  color: #333;
-}
-.dump-section {
-  width: 98%;
-  margin: 0 auto;
-  text-align: center;
-}
-.dump-section-head {
-  font-size: 14px;
-  font-weight: normal;
-  text-align: left;
-  letter-spacing: 0.1rem;
-  color: #333;
-  padding: 2px 7px;
-  margin-top: 10px;
-  border-left: 3px solid rgba(0, 73, 134, 1.0);
-  border-bottom: 1px solid rgba(0, 73, 134, 1.0);
-}
-.dump-section-body {
-  padding: 5px 0;
-}
-.dump-request-button {
-  width: 150px;
-  background-color: rgba(0, 73, 134, 1.0);
-}
 
 
 
@@ -526,3 +495,58 @@ table td:first-child::before {
   padding: 0;
   font-size: 20px;
 }
+
+
+
+/******************************************************************************/
+/* overlay                                                                    */
+/******************************************************************************/
+#simulate-tooltip {
+  position:absolute;
+  display:none;
+  max-width:360px;
+  background:#fff;
+  border:1px solid #aaa;
+  border-radius:8px;
+  padding:12px;
+  box-shadow:0 6px 16px rgba(0,0,0,0.25);
+  z-index:9999;
+}
+#simulate-tooltip-arrow,
+#simulate-tooltip-arrow-border {
+  position:absolute;
+  width:0;
+  height:0;
+}
+.arrow-top {
+  top:-8px;
+  border-left:8px solid transparent;
+  border-right:8px solid transparent;
+  border-bottom:8px solid #fff;
+}
+.arrow-top-border {
+  top:-10px;
+  border-left:10px solid transparent;
+  border-right:10px solid transparent;
+  border-bottom:10px solid #aaa; /* 枠線色 */
+}
+.arrow-bottom {
+  bottom:-8px;
+  border-left:8px solid transparent;
+  border-right:8px solid transparent;
+  border-top:8px solid #fff;
+}
+.arrow-bottom-border {
+  bottom:-10px;
+  border-left:10px solid transparent;
+  border-right:10px solid transparent;
+  border-top:10px solid #aaa;
+}
+#simulate-tooltip-table-wrapper {
+  overflow-x: hidden;
+}
+#simulate-tooltip-plan-name,
+#simulate-tooltip-total-month {
+  text-align: left;
+}
+

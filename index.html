@@ -17,11 +17,29 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
         <!-- CSS -->
-        <link rel="stylesheet" type="text/css" href="fire.css?ver=20260410a">
+        <link rel="stylesheet" type="text/css" href="fire.css?ver=20260411a">
     </head>
 
 
     <body>
+        <div id="simulate-tooltip">
+            <div id="simulate-tooltip-arrow-border"></div>
+            <div id="simulate-tooltip-arrow"></div>
+            <div id="simulate-tooltip-content">
+                <div class="table-wrapper" id="simulate-tooltip-table-wrapper">
+                    <table id="simulate-tooltip-table-total">
+                        <tbody>
+                            <tr><td>プラン名</td><td id="simulate-tooltip-plan-name"></td></tr>
+                            <tr><td>経過年数</td><td id="simulate-tooltip-total-month"></td></tr>
+                            <tr><td>純利益(計)</td><td id="simulate-tooltip-total-gain"></td></tr>
+                            <tr><td>積立額(計)</td><td id="simulate-tooltip-total-amount"></td></tr>
+                            <tr><td>納税額(計)</td><td id="simulate-tooltip-total-tax"></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
         <div id="background">
             <section class="section">
                 <div class="section-head">
@@ -131,6 +149,10 @@
                                 <input type="number" id="edit-plan-start-year" min="2020" max="2040">/
                                 <input type="number" id="edit-plan-start-month" min="1" max="12">
                             </div>
+                            <div class="form edit-plan-tax">
+                                <label for="edit-plan-plan-tax">税金も考慮</label>
+                                <input type="checkbox" id="edit-plan-tax" >
+                            </div>
                             <h3>毎月の設定</h3>
                             <div class="table-wrapper">
                                 <table>
@@ -165,8 +187,6 @@
             </dialog>
 
         </div>
-
-        <script src="fire.js?ver=20260410a"></script>
-
+        <script src="fire.js?ver=20260411a"></script>
     </body>
 </html>
