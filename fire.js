@@ -322,17 +322,6 @@ function refreshSimulateTable(plans) {
   let maxMonth = parseInt(v2.toString().substring(4, 6));
 
   // ヘッダ行を作成
-  //{
-  //  let html_thead_tr = "";
-  //  html_thead_tr += "<tr>";
-  //  html_thead_tr += "<th>年目</th>";
-  //  html_thead_tr += "<th>年/月</th>";
-  //  for (let p = 0; p < plans.length; p++) {
-  //    html_thead_tr += "<th>" + plans[p].name + "</th>";
-  //  }
-  //  html_thead_tr += "</tr>";
-  //  $("#simulate-thead").html(html_thead_tr);
-  //}
   {
     let html_thead = $("#simulate-thead");
     html_thead.html("");
@@ -438,9 +427,9 @@ function refreshTooltip(html_td) {
   const planName = html_td.data("plan-name");
   const planDescription = html_td.data("plan-description");
   const totalMonth = html_td.data("total-month");
-  const totalGain = Math.round(html_td.data("total-gain")).toString() + "万円";
-  const totalAmount = html_td.data("total-amount") + "万円";
-  const totalTax = Math.round(html_td.data("total-tax")).toString() + "万円";
+  const totalGain = assetsToString(html_td.data("total-gain")) + "円";
+  const totalAmount = assetsToString(html_td.data("total-amount")) + "円";
+  const totalTax = assetsToString(html_td.data("total-tax")) + "円";
   const elapsed = Math.floor(totalMonth / 12).toString() + "年 " + (totalMonth % 12).toString() + "ヶ月";
   $("#simulate-tooltip-plan-name").text(planName);
   $("#simulate-tooltip-plan-description").text(planDescription);
@@ -551,7 +540,7 @@ $(function () {
     currentCell = null;
   });
 
-  $("#table-wrapper").on("scroll", function () {
+  $(".table-wrapper").on("scroll", function () {
     tooltip.fadeOut(100);
     currentCell = null;
   });
