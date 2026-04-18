@@ -298,6 +298,14 @@ input {
   margin-left: 10px;
   vertical-align: center;
 }
+.hyperlink-wrapper {
+  margin-top: 12px;
+  margin-bottom: 2px;
+  font-size: 0.85rem;
+}
+.hyperlink-wrapper span {
+  margin-right: 4px;
+}
 
 
 /******************************************************************************/

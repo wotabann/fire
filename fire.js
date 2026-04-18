@@ -13,7 +13,7 @@ function initialize() {
   $("#dialog-close-button").on("click", () => { hideEditPlanDialog() });
 
   let plans = loadRegisteredPlans();
-  refreshEditSelectSection(plans);
+  refreshEditSelectSection(plans, 0);
 }
 
 
@@ -83,12 +83,13 @@ function selectEditPlan() {
   refreshEditPlanDialog(plans[id]);
   showEditPlanDialog();
 }
-function refreshEditSelectSection(plans) {
+function refreshEditSelectSection(plans, id) {
   let html = "";
   for (let i = 0; i < plans.length; i++) {
     html += "<option value=" + i + ">" + plans[i].name + ": " + plans[i].description + "</option>";
   }
   $("#edit-select").html(html);
+  $("#edit-select").val(id);
 }
 
 
@@ -177,7 +178,7 @@ function registerPlan() {
   }
   hideEditPlanDialog();
   plans = loadRegisteredPlans();
-  refreshEditSelectSection(plans);
+  refreshEditSelectSection(plans, id);
   hideProgressTable(plans);
   hideSimulateTable(plans);
 }
